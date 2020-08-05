@@ -1,5 +1,6 @@
-#!/usr/local/bin/python3.8
+#!/usr/bin/python
 import calendar
+import datetime
 import requests
 
 def getworkdays(year, month):
@@ -21,7 +22,6 @@ def createtask(project, task, duration, date):
         'btn_submit': 'Submit'}
 
 def fillmonth(year, month):
-    aplcert = '/usr/share/ca-certificates/mozilla/astripolskaCA.crt'
     loginreq = requests.post(loginurl, data=login, verify=aplcert)
     m = getworkdays(year, month)
     for day in m:
@@ -29,12 +29,24 @@ def fillmonth(year, month):
         requests.post(timeurl, data=createtask('85', '336', '6:00', daytostr(day)), cookies=loginreq.cookies, verify=aplcert)
         requests.post(timeurl, data=createtask('23', '72', '1:45', daytostr(day)), cookies=loginreq.cookies, verify=aplcert)
 
+def fillcurrentweek():
+    loginreq = requests.post(loginurl, data=login, verify=aplcert)
+    today = datetime.date(2020, 7, 29)
+    lastmonday = today - datetime.timedelta(days=today.weekday())
+    for i in range(0, 5):
+        day = lastmonday + datetime.timedelta(i)
+        requests.post(timeurl, data=createtask('23', '17', '0:15', day), cookies=loginreq.cookies, verify=aplcert)
+        requests.post(timeurl, data=createtask('85', '336', '6:00', day), cookies=loginreq.cookies, verify=aplcert)
+        requests.post(timeurl, data=createtask('23', '72', '1:45', day), cookies=loginreq.cookies, verify=aplcert)
+
 url = 'https://ecp.astripolska.net/'
 loginurl = url + 'login.php'
 timeurl = url + 'time.php'
+aplcert = '/etc/ca-certificates/trust-source/anchors/astripolskaCA.crt'
 
 login = {'login': 'xxx',
     'password': 'xxx',
     'btn_login': "Login"}
 
-fillmonth(2020, 6)
+# fillmonth(2020, 7)
+fillcurrentweek()
