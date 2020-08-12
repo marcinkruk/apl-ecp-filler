@@ -6,7 +6,7 @@ import requests
 def getworkdays(year, month):
     c = calendar.Calendar()
     m = []
-    for day in c.itermonthdays4(year ,month):
+    for day in c.itermonthdays4(year, month):
         if day[1] == month and day[3] != 5 and day[3] != 6:
             m.append(day)
     return m
@@ -31,7 +31,7 @@ def fillmonth(year, month):
 
 def fillcurrentweek():
     loginreq = requests.post(loginurl, data=login, verify=aplcert)
-    today = datetime.date(2020, 7, 29)
+    today = datetime.datetime.today()
     lastmonday = today - datetime.timedelta(days=today.weekday())
     for i in range(0, 5):
         day = lastmonday + datetime.timedelta(i)
